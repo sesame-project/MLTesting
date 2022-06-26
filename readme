@@ -1,1 +1,42 @@
 
+# DeepKnowledge: Knowledge-Driven Automated testing tool of deep-neural-network
+###### This is the SESAME Assurance of tool-supported technique Data-Driven and Learning Components of EDDIs
+
+
+This code is implementation of our tool-supported technique DeepKnowledge.
+It is a beta version provided as a reference to the approach presented in the delivrable 6.1. 
+If you encounter any problem do not hesitate to reach out to York team (sondess.missaoui@york.ac.uk).
+
+Scripts are tested with the open-source machine learning framework Keras (v2.2.2) with Tensorflow (v2.6) backend.
+
+##Abstract
+The increasing use of Deep Neural Networks (DNNs) in safety- and security-critical applications created an urgent need for effective DNN testing techniques
+capable of establishing the dependability levels of DNNs.
+Despite noteworthy advances, recent research proposes testing techniques and coverage criteria that focus primarily on the analysis of the DNN 
+behaviour using the conventional training-validation-testing DNN practice, often neglecting important generalisation capabilities exhibited by DNNs. 
+We address this gap by introducing DeepKnowledge, a systematic testing methodology for DNNs founded on the principle of knowledge transfer. 
+Our empirical evaluation of several DNNs, across multiple datasets and state-of-the-art adversarial generation techniques demonstrates 
+the usefulness and effectiveness of DeepKnowledge and its ability to support the engineering of more dependable DNNs.
+DeepKnowledge provides to our partners an easy and effective assurance technique for their Machine Learning componenets.
+our tool in a simple multi-paradigm technology, i.e., using a set of Python scripts. 
+This enables a quick adaptation and code maintenance by our partners. 
+The developed prototype tool is also compatible with most systems and architectures used by our industrial partners in SESAME.
+
+## Install Required Packages
+####OSX
+pip install --upgrade https://storage.googleapis.com/tensorflow/mac/ cpu/tensorflow-1.10.0-py2-none-any.whl
+
+
+####Linux
+pip install --upgrade https://storage.googleapis.com/tensorflow/linux/
+cpu/tensorflow-1.10.0-py2-none-any.whl
+```
+pip install Keras==2.2.2
+pip install numpy
+pip install scikit-learn
+pip install scikit-image
+pip install matplotlib
+pip install pillow
+pip install cleverhans
+pip install scipy==1.7.0
+```
