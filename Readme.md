@@ -1,6 +1,6 @@
 
-#DEEPKNOWLEDGE: Knowledge-Driven Automated testing tool of deep-neural-network
-######This is the SESAME Assurance of tool-supported technique Data-Driven and Learning Components of EDDIs
+# DEEPKNOWLEDGE: Knowledge-Driven Automated testing tool of deep-neural-network
+###### This is the SESAME Assurance of tool-supported technique Data-Driven and Learning Components of EDDIs
 
 
 This code is implementation of our tool-supported technique DEEPKNOWLEDGE.
@@ -9,7 +9,7 @@ If you encounter any problem do not hesitate to reach out to York team (sondess.
 
 Scripts are tested with the open-source machine learning framework Keras (v2.2.2) with Tensorflow (v2.6) backend.
 
-##Abstract
+## Abstract
 The increasing use of Deep Neural Networks (DNNs) in safety- and security-critical applications created an urgent need for effective 
 DNN testing techniques capable of establishing the dependability levels of DNNs.
 Despite noteworthy advances, recent research proposes testing techniques and coverage criteria that focus primarily on the analysis of the DNN 
@@ -40,13 +40,13 @@ pip install pillow
 pip install cleverhans
 pip install scipy==1.7.0
 ```
-##Runing DEEPKNOWLEDGE
+## Runing DEEPKNOWLEDGE
 use shell command
 ```
 $ python Coverage_Estimation.py –model [path_to_keras_model_file] –dataset svhn –approach knw –
 threshold 0.5 –logfile [path_to_log_file]
 ```
-##Parameters for configuring 
+## Parameters for configuring 
 ```
 - model => The name of the Keras model file. Note the architecture file (i.e., JSON) and the weights
 file should be saved separately as an .h5 file. If the model is trained and saved into a file, it needs to be
