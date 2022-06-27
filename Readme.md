@@ -1,11 +1,11 @@
 
-# DEEPKNOWLEDGE: Knowledge-Driven Automated testing tool of deep-neural-network
+# DeepKnowledge: Knowledge-Driven automated testing of Deep-Neural Networks
 ###### This is the SESAME Assurance of tool-supported technique Data-Driven and Learning Components of EDDIs
 
 
 This code is implementation of our tool-supported technique DEEPKNOWLEDGE.
-It is a beta version provided as a reference to the approach presented in the delivrable 6.1. 
-If you encounter any problem do not hesitate to reach out to York team (sondess.missaoui@york.ac.uk).
+It is in beta version and provided as a reference to the approach presented in the deliverable 6.1. 
+If you encounter any problems, do not hesitate to reach out to the York team (sondess.missaoui@york.ac.uk).
 
 Scripts are tested with the open-source machine learning framework Keras (v2.2.2) with Tensorflow (v2.6) backend.
 
@@ -23,13 +23,12 @@ This enables a quick adaptation and code maintenance by our partners.
 The developed prototype tool is also compatible with most systems and architectures used by our industrial partners in SESAME.
 
 ## Install Required Packages
-####OSX
-pip install --upgrade https://storage.googleapis.com/tensorflow/mac/ cpu/tensorflow-1.10.0-py2-none-any.whl
+#### OSX
+    pip install --upgrade https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.10.0-py2-none-any.whl
 
 
-####Linux
-pip install --upgrade https://storage.googleapis.com/tensorflow/linux/
-cpu/tensorflow-1.10.0-py2-none-any.whl
+#### Linux
+    pip install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-1.10.0-py2-none-any.whl
 ```
 pip install Keras==2.2.2
 pip install numpy
