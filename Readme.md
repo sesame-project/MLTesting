@@ -23,7 +23,7 @@ This enables a quick adaptation and code maintenance by our partners.
 The developed prototype tool is also compatible with most systems and architectures used by our industrial partners in SESAME.
 
 ## Install Required Packages
-We recommend to start by creating a virtual environement first then install the required package.
+We recommend to start by creating a virtual environement then install the required packages.
 
 #### Vitual Environement
 ```
