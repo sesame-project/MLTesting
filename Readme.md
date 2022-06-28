@@ -26,13 +26,16 @@ The developed prototype tool is also compatible with most systems and architectu
 We recommend to start by creating a virtual environement then install the required packages.
 
 #### Vitual Environement
+
 ```
-python3 -m venv path/to/the/vitual/environment
+python3 -m pip install --user virtualenv
+
+python3 -m venv path/to/the/virtual/environment
 ```
 ###### Activate virtual environment
 
 ```
-source path/to/the/vitual/environment/bin/activate
+source path/to/the/virtual/environment/bin/activate
 ```
 
 
