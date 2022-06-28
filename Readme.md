@@ -26,9 +26,14 @@ The developed prototype tool is also compatible with most systems and architectu
 We recommend to start by creating a virtual environement first then install the required package.
 
 #### Vitual Environement
+```
 python3 -m venv path/to/the/vitual/environment
+```
 ###### Activate virtual environment
+
+```
 source path/to/the/vitual/environment/bin/activate
+```
 
 
 
@@ -48,8 +53,10 @@ pip install sklearn
 ```
 ## Runing DEEPKNOWLEDGE
 use shell command
-cd path/to/the/project/folder
+
 ```
+$ cd path/to/the/project/folder
+
 $ python Coverage_Estimation.py –model [path_to_keras_model_file] –dataset svhn –approach knw –
 threshold 0.5 –logfile [path_to_log_file]
 ```
