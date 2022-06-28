@@ -23,24 +23,32 @@ This enables a quick adaptation and code maintenance by our partners.
 The developed prototype tool is also compatible with most systems and architectures used by our industrial partners in SESAME.
 
 ## Install Required Packages
-#### OSX
-    pip install --upgrade https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.10.0-py2-none-any.whl
+We recommend to start by creating a virtual environement first then install the required package.
+
+#### Vitual Environement
+python3 -m venv path/to/the/vitual/environment
+###### Activate virtual environment
+source path/to/the/vitual/environment/bin/activate
+
 
 
 #### Linux
-    pip install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-1.10.0-py2-none-any.whl
+    
 ```
-pip install Keras==2.2.2
-pip install numpy
-pip install scikit-learn
-pip install scikit-image
-pip install matplotlib
-pip install pillow
-pip install cleverhans
-pip install scipy==1.7.0
+pip install tensorflow==2.8.0
+pip install numpy==1.21.5
+
+pip install keras==2.8.0⇒ already satisfied
+pip install protobuf==3.20.1
+
+pip install numpy==1.21.5
+pip install pandas==1.3.5
+pip install sklearn
+
 ```
 ## Runing DEEPKNOWLEDGE
 use shell command
+cd path/to/the/project/folder
 ```
 $ python Coverage_Estimation.py –model [path_to_keras_model_file] –dataset svhn –approach knw –
 threshold 0.5 –logfile [path_to_log_file]
