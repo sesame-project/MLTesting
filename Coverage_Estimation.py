@@ -1,6 +1,4 @@
 import argparse
-# from absl import app
-# from absl import flags
 import tensorflow as tf
 from tensorflow import keras
 
@@ -22,7 +20,7 @@ from Coverages.knw import *
 from tensorflow.keras import applications
 from tensorflow.python.client import device_lib
 
-__version__ = 0.9
+__version__ = 0.1
 
 
 
