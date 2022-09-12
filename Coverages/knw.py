@@ -9,10 +9,8 @@ pd.options.mode.chained_assignment = None
 import os
 import pickle
 from collections import defaultdict
-# from Coverages.idc_knw import *
-from Coverages.idc import *
+from Coverages.idc_knw import *
 from sklearn import externals
-    # .joblib as extjoblib
 import joblib
 from Dataprocessing import load_MNISTVAL, load_CIFARVAL, load_driving_data, load_SVHN_, load_EMNIST, load_MNIST, \
     load_CIFAR, load_MNIST_32, split_data
@@ -39,7 +37,7 @@ def get_adv(attack, dataset, X_test, Y_test):
 
     adv_image_all = np.concatenate(adv_image_all, axis=0)
     print("adv_image_all ", adv_image_all.shape[0])
-    print("ADVvvvvvv")
+    
 
     # adv_size = max(adv_image_all.shape[0], 3000)
 
@@ -60,17 +58,10 @@ def get_stat(preferred_neurons,type):
 
     return 0
 def save_KnwTrNeurons(neurons, filename):
-    # filename = filename + '_knw.pkl'
-    # with h5py.File(filename, 'a') as hf:
-    #     group = hf.create_group('group' + str(group_index))
-    #     for i in range(len(neurons)):
-    #         group.create_dataset("trneurons_" + str(i), data=neurons[i])
+ 
     filename = filename + '_knw.sav'
     joblib.dump(neurons, filename)
-    # with open(filename, 'wb') as out_file:
-    #     pickle.dump(neurons, out_file)
-
-    # print("total knw neurons data saved in ", filename)
+    
     return
 
 
@@ -142,9 +133,9 @@ class KnowledgeCoverage:
             # for layer_index in range(layer_count):  # layer_out is output of layer for all inputs
             for layer_index, layer_out in enumerate(outs):
 
-                 # if layer_index not in self.skip_layers:
+                 
                     inside_layer = {}
-                # if layer_index in self.trainable_layers:
+              
                     out_for_input = outs[layer_index][input_index]
 
                     filter_outs = np.zeros((out_for_input.shape[-1],))
@@ -153,30 +144,22 @@ class KnowledgeCoverage:
                     # which neuron get that max act value
                     neuron_id = np.argmax(out_for_input, axis=None)  # ==> this gives over 1k of neurons
                     index_neuron = np.unravel_index(np.argmax(out_for_input), out_for_input.shape)
-                    # neuron_id2 = np.argmax(out_for_input)
-                    # print("neuron_id2",neuron_id2)
-                    # neuron_id1 = np.argmax(out_for_input.shape[-1])#==> this gives tjrs 0
-
-                    # this to get the per neuron act values
-                    # it return the filter rather than the neuron
+                    
                     for filter_index in range(out_for_input.shape[-1]):
                         maxact = np.max(out_for_input[..., filter_index])
                         neuronTuple = {(layer_index, filter_index): maxact}
                         inside_layer.update(neuronTuple)
 
                     filter_key = max(inside_layer, key=inside_layer.get)
-                    # print(inside_layer)
+               
                     val_max = inside_layer.get(filter_key)
-                    # print(neuron_key,val_max)
+                   
                     neuron_dictionary.update({layer_index: filter_key})
                     global_neuron_index = (layer_index, (neuron_id, index_neuron))
-                    # global_neuron_index = (layer_index, filter_key)
+                    
                     ''' ['inputs', 'activations', 'max_activations', 'max_activation_index', 'neuron_index']'''
                     data.append([input_index, layer_index, max_act, global_neuron_index, neuron_id])
-                    # data would have ntime number of layer the input size
-
-        # print("filter_count_by_layer",filter_count_by_layer)
-
+                   
 
 
         df = pd.DataFrame(data,
