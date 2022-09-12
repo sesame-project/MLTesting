@@ -4,18 +4,6 @@ from tensorflow import keras
 
 from datetime import datetime
 from tensorflow.keras.models import model_from_json, load_model, save_model
-# import multiprocessing
-# import itertools
-# from Dataprocessing import load_MNISTVAL, load_CIFARVAL, load_MNIST, load_CIFAR, load_SVHN_
-# from utils import filter_val_set, get_trainable_layers
-# from utils import generate_adversarial, filter_correct_classifications
-# from Coverages.idc import ImportanceDrivenCoverage
-# from Coverages.neuron_cov import NeuronCoverage
-# from Coverages.tkn import DeepGaugeLayerLevelCoverage
-# from Coverages.kmn import DeepGaugePercentCoverage
-# from Coverages.ss import SSCover
-# from Coverages.sa import SurpriseAdequacy
-# from Coverages.knw import KnowledgeCoverage
 from Coverages.knw import *
 from tensorflow.keras import applications
 from tensorflow.python.client import device_lib
@@ -154,18 +142,16 @@ if __name__ == "__main__":
         model = args['model'] if args['model'] else 'LeNet1'
         dataset = args['dataset'] if args['dataset'] else 'mnist'
         approach = args['approach'] if args['approach'] else 'knw'
-        percent = args['percentage'] if args['percentage'] else 0.9
+        percent = args['percentage'] if args['percentage'] else 0.5
         nbr_Trknw= args['nbr_Trknw'] if args['nbr_Trknw'] else 10
-        threshold = args['HD_thre'] if args['HD_thre'] else 0
-        TypeTrknw = args['TrKnw'] if args['TrKnw'] else 'top'
+        threshold = args['HD_thre'] if args['HD_thre'] else 0.55
+        TypeTrknw = args['TrKnw'] if args['TrKnw'] else 'preferred'
         split = args['split'] if args['split'] else 0
         attack = args['adv'] if args['adv'] else 'mim'
         selected_class = args['class'] if not args['class'] == None else -1
         logfile_name = args['logfile'] if args['logfile'] else 'resultknw.log'
         logfile = open(logfile_name, 'a')
-    # print(cuda_version)
-    # #generate attacks for svhn
-    # with tf.device('/CPU:0'):
+    
         startTime = time.time()
 
         results=generate_coverage(approach,model,dataset,TypeTrknw, percent,selected_class,threshold, attack,split)
