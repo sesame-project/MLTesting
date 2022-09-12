@@ -1,11 +1,11 @@
 import numpy as np
 from sklearn import cluster
-from Coverages.Clustering import *
+# from Coverages.Clustering import *
 from utils_ini import save_quantization, load_quantization, save_totalR, load_totalR
 from utils_ini  import save_layerwise_relevances, load_layerwise_relevances
-from utils_ini  import get_layer_outs_new, create_dir
+from utils_ini  import get_layer_outs_new, create_dir, get_non_con_neurons
 from lrp_toolbox.model_io import write, read
-
+from utils_ini import get_conv
 from sklearn.metrics import silhouette_score
 
 experiment_folder = 'experiments'
@@ -94,10 +94,9 @@ class ImportanceDrivenCoverage:
             print("Clustering results NOT FOUND; Calculating them now!")
             train_layer_outs = get_layer_outs_new(self.model, np.array(self.train_inputs))
 
-            qtized, Clusters = quantizeSilhouette(train_layer_outs, is_conv,
+            qtized = quantizeSilhouette(train_layer_outs, is_conv,
                               relevant_neurons)
-            # qtized = quantizeSilhouette(train_layer_outs[self.subject_layer], is_conv,
-            #                             relevant_neurons)
+
             save_quantization(qtized, '%s/%s_%d_%d_%d_silhouette'
                               %(experiment_folder,
                                 self.model_name,
@@ -116,7 +115,7 @@ class ImportanceDrivenCoverage:
                                                                 test_inputs, self.subject_layer,
                                                                 relevant_neurons,subsetTop,
                                                                 self.selected_class,
-                                                                test_layer_outs, qtized, is_conv,
+                                                                test_layer_outs, qtized, is_conv,trainable_layers,
                                                                 self.covered_combinations)
 
         return coverage, covered_combinations, max_comb
@@ -155,49 +154,31 @@ def quantize(out_vectors, conv, relevant_neurons, n_clusters=3):
 
     return quantized_
 
-
-def quantizeSilhouette(train_layer_outs, conv, relevant_neurons,model,subsetTop):
+def quantizeSilhouette(out_vectors, conv, relevant_neurons):
     quantized_ = []
-    Clusters = []
-    centroids=[]
+
 
     for i in relevant_neurons:
-        # print("global index read", i)
-        # neuron_layer=getneuron_layer(subsetTop, i)
-        neuron_layer=i[0]
-        n=i[1]
-        if 'conv' in model.layers[neuron_layer].name:
-            is_conv = True
-        else:
-            is_conv = False
+        # a neuron n= (neuron_id, index_neuron)
 
-        out_vectors=train_layer_outs[neuron_layer]
         out_i = []
-
         for l in out_vectors:
-            # if i not in l: continue
-            # else:
-                if n in range (out_vectors.shape[-1]):
-
-                    if is_conv: #conv layer
-                        out_i.append(np.mean(l[...,n]))
-                    else:
-                        out_i.append(l[n])
+            #l is an input
+            if conv: #conv layer
+                out_i.append(np.mean(l[i[1]]))
+            else:
+                out_i.append(l[i[1]])
 
         #If it is a convolutional layer no need for 0 output check
-        if not is_conv:
+        if not conv:
             out_i = [item for item in out_i if item != 0] # out_i = filter(lambda elem: elem != 0, out_i)
 
         values = []
         if not len(out_i) < 10: #10 is threshold of number positives in all test input activations
-            # print("clusters calculation", len(out_i))
-            centroids = kmeans_cluster(out_i)
             clusterSize = range(2, 5)#[2, 3, 4]
             clustersDict = {}
             for clusterNum in clusterSize:
                 kmeans          = cluster.KMeans(n_clusters=clusterNum)
-                # check how many unique labels do you have
-                # print("the cluster!!!!!!!!!!!!!",np.unique(kmeans.n_clusters))
                 clusterLabels   = kmeans.fit_predict(np.array(out_i).reshape(-1, 1))
                 silhouetteAvg   = silhouette_score(np.array(out_i).reshape(-1, 1), clusterLabels)
                 clustersDict [silhouetteAvg] = kmeans
@@ -206,7 +187,6 @@ def quantizeSilhouette(train_layer_outs, conv, relevant_neurons,model,subsetTop)
             bestKMean          = clustersDict[maxSilhouetteScore]
 
             values = bestKMean.cluster_centers_.squeeze()
-
         values = list(values)
         values = limit_precision(values)
 
@@ -215,9 +195,11 @@ def quantizeSilhouette(train_layer_outs, conv, relevant_neurons,model,subsetTop)
             values.append(0)
 
         quantized_.append(values)
-        Clusters.append(centroids)
 
-    return quantized_,  Clusters
+    return quantized_
+
+
+
 
 
 def quantizeSilhouetteOld(out_vectors, conv, relevant_neurons):
@@ -276,108 +258,95 @@ def limit_precision(values, prec=2):
 
 def determine_quantized_cover(lout, quantized):
     covered_comb = []
-    # print(lout)
     for idx, l in enumerate(lout):
-
-
-        # print(quantized[idx])
-        #if l == 0:
+            # print(idx)
+            # print(quantized[idx])
+        # if l.all() == 0:
         #    covered_comb.append(0)
-        #else:
-        closest_q = min(quantized[idx], key=lambda x:abs(x-l))
-        covered_comb.append(closest_q)
+        # else:
+            closest_q = min(quantized[idx], key=lambda x:abs(x-l))
+            covered_comb.append(closest_q)
 
     return covered_comb
 
 
-def measure_idc(model, model_name, test_inputs, subject_layer,
-                                   relevant_neurons, subsetTop,sel_class,
-                                   test_layer_outs, qtized, is_conv,
+def measure_idc(model, model_name, test_inputs,relevant_neurons, subsetTop,sel_class,
+                                   test_layer_outs, train_layer_outs,trainable_layers, skip_layers,
                                    covered_combinations=()):
+
+    print("test_input size",test_inputs.shape[0])
     relevant= {}
     layers=[]
+    neurons_list=[]
+    # j=0
+    # for i in model.layers:
+    #     print("trainable_layer",i)
+    #     print(i.name)
+    #     print(len(test_layer_outs))
+    #     print(get_conv(j,model,test_layer_outs))
+
+        # j+=1
     for n in relevant_neurons:
+        neurons_list.append(n[1])
         if n[0] not in layers:
             layers.append(n[0])
-    print("all layers:", layers)
+    # print("all layers:", layers)
 
     for x in relevant_neurons:
         if x[0] in relevant:
             relevant[x[0]].append(x[1])
         else:
             relevant[x[0]] = [x[1]]
-    print("all relevants", relevant)
+    # print("all neurons per layers", relevant)
     total_max_comb=0
+
     for layer,neurons in relevant.items():
-        subject_layer = layer
-        if 'conv' in model.layers[subject_layer].name:
-            is_conv = True
-        else:
-            is_conv = False
+            subject_layer = layer
 
-        for test_idx in range(len(test_inputs)):
-            if is_conv:
-                lout = []
-                for r in neurons:
-                    # print("neuron", r)
-                    lout.append(np.mean(test_layer_outs[subject_layer][test_idx][..., r]))
-            else:
-                lout = test_layer_outs[subject_layer][test_idx][neurons]
 
-            comb_to_add = determine_quantized_cover(lout, qtized)
-            # print("combinations:::")
-            # print(comb_to_add)
+        # if subject_layer not in skip_layers:
+            print("layer", subject_layer)
+            print("neurons", neurons)
+            is_conv = get_conv(subject_layer, model, train_layer_outs)
 
-            if comb_to_add not in covered_combinations:
-                covered_combinations += (comb_to_add,)
+            qtizedlayer=quantizeSilhouette(train_layer_outs[subject_layer], is_conv,
+                                  neurons)#train_layer_outs[subject_layer]
 
-        max_comb = 1  # q_granularity**len(relevant_neurons)
-        for q in qtized:
-            # print("qtized",qtized)
-            max_comb *= len(q)
-        print("max_Comb", max_comb)
-        total_max_comb+=max_comb
+            for test_idx in range(len(test_inputs)):
+                if is_conv :
+                    lout = []
+                    for r in neurons:
+                        lout.append(np.mean(test_layer_outs[subject_layer][test_idx][r[1]]))
+
+                else:
+                        lout = []
+                        # neuronsind=list(zip(*neurons))
+                        neuronsindices=get_non_con_neurons(neurons)
+                        # print(neuronsindices)
+                        for i in neuronsindices:
+                            lout.append(test_layer_outs[subject_layer][test_idx][i])
+
+
+                comb_to_add = determine_quantized_cover(lout, qtizedlayer)
+
+                if comb_to_add not in covered_combinations:
+                        covered_combinations += (comb_to_add,)
+
+            max_comb = 1  # q_granularity**len(relevant_neurons)
+
+            for q in qtizedlayer:
+
+                    max_comb *= len(q)
+                    # print("first_total", total_max_comb)
+
+                    # total_max_comb+=max_comb#works for mnist
+            total_max_comb += max_comb
+
     print("total_max_comb",total_max_comb)
 
     covered_num = len(covered_combinations)
-    # coverage = float(covered_num) / max_comb
     coverage = float(covered_num) / total_max_comb
-    """
-    # for test_idx in range(len(test_inputs)):
-    # 
-    #         lout = []
-    #         for r in relevant_neurons:
-    #             # neuron_layer=getneuron_layer(subsetTop,r)
-    # 
-    #             neuron_layer=r[0]
-    #             # print("the layer::::",neuron_layer)
-    #             outvect=test_layer_outs[neuron_layer]
-    #             if 'conv' in model.layers[neuron_layer].name:
-    #                 is_conv = True
-    #             else:
-    #                 is_conv = False
-    #             if is_conv:
-    #                 for l in test_layer_outs[neuron_layer]:
-    #                     if r in range(outvect.shape[-1]):
-    # 
-    #                         lout.append(np.mean(test_layer_outs[neuron_layer][test_idx][..., r[1]]))
-    #             else:
-    #                 # print("list of all neurons to that layer",relevant[neuron_layer])
-    #                 lout = test_layer_outs[neuron_layer][test_idx][relevant[neuron_layer]]
-    # 
-    # 
-    #             comb_to_add = determine_quantized_cover(lout, qtized)
-    # 
-    #             if comb_to_add not in covered_combinations:
-    #                 covered_combinations += (comb_to_add,)
-    
-    max_comb = 1#q_granularity**len(relevant_neurons)
-    for q in qtized:
-        max_comb *= len(q)
 
-    covered_num = len(covered_combinations)
-    coverage = float(covered_num)/max_comb
-    """
     return coverage*100, covered_combinations, total_max_comb
 
 
