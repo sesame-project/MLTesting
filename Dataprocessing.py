@@ -28,36 +28,39 @@ def split_data(split, X, Y):
 
 def load_MNIST_32():
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
-    x_test, X_val, y_test, y_val = train_test_split(x_test, y_test, test_size=0.85,
+    x_test, X_val, y_test, y_val = train_test_split(x_test, y_test, test_size=0.64,
                                                     random_state=1)  # 0.25 x 0.8 = 0.2
 
-    # expand new axis, channel axis
+    # #expand new axis, channel axis
     x_train = np.expand_dims(x_train, axis=-1)
     x_test = np.expand_dims(x_test, axis=-1)
-
+    X_val = np.expand_dims(x_test, axis=-1)
     # [optional]: we may need 3 channel (instead of 1)
     x_train = np.repeat(x_train, 3, axis=-1)
     x_test = np.repeat(x_test, 3, axis=-1)
+    X_val = np.repeat(x_test, 3, axis=-1)
     # it's always better to normalize
     x_train = x_train.astype('float32') / 255
     x_test = x_test.astype('float32') / 255
+    X_val = x_test.astype('float32') / 255
     # resize the input shape , i.e. old shape: 28, new shape: 32
     x_train = tf.image.resize(x_train, [32, 32])  # if we want to resize
     x_test = tf.image.resize(x_test, [32, 32])
-
+    X_val = tf.image.resize(x_test, [32, 32])
     # one hot
     y_train = tf.keras.utils.to_categorical(y_train, num_classes=10)
     y_test = tf.keras.utils.to_categorical(y_test, num_classes=10)
+    y_val = tf.keras.utils.to_categorical(y_test, num_classes=10)
 
 
-    return x_train, y_train, x_test, y_test
+    return x_train, y_train, x_test, y_test,X_val, y_val
 
 def load_SVHN_(typedt):
     train_raw = loadmat('dataset/SVHN/train_32x32.mat')
     test_raw = loadmat('dataset/SVHN/test_32x32.mat')
     train_images = np.array(train_raw['X'])
     test_images = np.array(test_raw['X'])
-    print("DATA SVHN is loaded")
+    # print("DATA SVHN is loaded")
 
     train_labels = train_raw['y']
     test_labels = test_raw['y']
@@ -81,7 +84,7 @@ def load_SVHN_(typedt):
     y_train = train_labels
     X_test = test_images
     y_test = test_labels
-    print("DATA SVHN is Transformed")
+    # print("DATA SVHN is Transformed")
     X_train, X_val, y_train, y_val = train_test_split(train_images, train_labels,
                                                       test_size=0.05, random_state=1)
     # print(X_train.shape)
@@ -181,7 +184,7 @@ def load_EMNIST(one_hot=True, channel_first=True):
 
 def load_CIFAR(one_hot=True):
     (X_train, y_train), (X_test, y_test) = cifar10.load_data()
-    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=1) # 0.25 x 0.8 = 0.2
+    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.05, random_state=1) # 0.25 x 0.8 = 0.2
 
     if one_hot:
         y_train = utils.to_categorical(y_train, num_classes=10)
@@ -275,7 +278,7 @@ def load_CIFARVAL(typedt, one_hot=True):
     if typedt == "zeroshot":
         # Load data
         (X_train, y_train), (X_test, y_test) =cifar100.load_data(label_mode="fine")
-        X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1,
+        X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.05,
                                                           random_state=1)  # 0.25 x 0.8 = 0.2
         if one_hot:
             y_train = utils.to_categorical(y_train, num_classes=100)
@@ -285,7 +288,7 @@ def load_CIFARVAL(typedt, one_hot=True):
     elif typedt == "ini":
         (X_train, y_train), (X_test, y_test) = cifar10.load_data()
         print("Loading....")
-        X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1,
+        X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.05,
                                                           random_state=1)  # 0.25 x 0.8 = 0.2
         if one_hot:
             y_train = utils.to_categorical(y_train, num_classes=10)
