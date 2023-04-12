@@ -1,6 +1,8 @@
+"""
+DeepImportance: https://github.com/DeepImportance/deepimportance_code_release
+"""
 import numpy as np
 from sklearn import cluster
-# from Coverages.Clustering import *
 from utils_ini import save_quantization, load_quantization, save_totalR, load_totalR
 from utils_ini  import save_layerwise_relevances, load_layerwise_relevances
 from utils_ini  import get_layer_outs_new, create_dir, get_non_con_neurons
@@ -17,6 +19,7 @@ def getneuron_layer(subset, neuron):
 
 
     return layer
+import numpy as np
 class ImportanceDrivenCoverage:
     def __init__(self,model, model_name, num_relevant_neurons, selected_class, subject_layer,
                  train_inputs, train_labels):
@@ -41,9 +44,7 @@ class ImportanceDrivenCoverage:
         self.covered_combinations = covered_combinations
 
     def test(self, test_inputs):
-        #########################
-        #1.Find Relevant Neurons#
-        #########################
+       
 
         try:
             print("Loading relevance scores")
@@ -52,12 +53,7 @@ class ImportanceDrivenCoverage:
                           'totalR', self.selected_class), 0)
 
             relevant_neurons = np.argsort(totalR[self.subject_layer])[0][::-1][:self.num_relevant_neurons]
-            # relevant_neurons = load_layerwise_relevances('%s/%s_%d_%d_%d'
-            #                                              %(experiment_folder,
-            #                                                self.model_name,
-            #                                                self.num_relevant_neurons,
-            #                                                self.selected_class,
-            #                                                self.subject_layer))
+           
         except Exception as e:
             print("Relevance scores must be calculated. Doing it now!")
                 # Convert keras model into txt
@@ -259,11 +255,7 @@ def limit_precision(values, prec=2):
 def determine_quantized_cover(lout, quantized):
     covered_comb = []
     for idx, l in enumerate(lout):
-            # print(idx)
-            # print(quantized[idx])
-        # if l.all() == 0:
-        #    covered_comb.append(0)
-        # else:
+           
             closest_q = min(quantized[idx], key=lambda x:abs(x-l))
             covered_comb.append(closest_q)
 
@@ -274,76 +266,65 @@ def measure_idc(model, model_name, test_inputs,relevant_neurons, subsetTop,sel_c
                                    test_layer_outs, train_layer_outs,trainable_layers, skip_layers,
                                    covered_combinations=()):
 
-    print("test_input size",test_inputs.shape[0])
+
     relevant= {}
     layers=[]
     neurons_list=[]
-    # j=0
-    # for i in model.layers:
-    #     print("trainable_layer",i)
-    #     print(i.name)
-    #     print(len(test_layer_outs))
-    #     print(get_conv(j,model,test_layer_outs))
-
-        # j+=1
+   
+       
     for n in relevant_neurons:
         neurons_list.append(n[1])
         if n[0] not in layers:
             layers.append(n[0])
-    # print("all layers:", layers)
+   
 
     for x in relevant_neurons:
         if x[0] in relevant:
             relevant[x[0]].append(x[1])
         else:
             relevant[x[0]] = [x[1]]
-    # print("all neurons per layers", relevant)
-    total_max_comb=0
+   
+    total_max_comb=1
 
     for layer,neurons in relevant.items():
-            subject_layer = layer
+        subject_layer = layer
+       
 
 
-        # if subject_layer not in skip_layers:
-            print("layer", subject_layer)
-            print("neurons", neurons)
-            is_conv = get_conv(subject_layer, model, train_layer_outs)
+        is_conv = get_conv(subject_layer, model, train_layer_outs)
 
-            qtizedlayer=quantizeSilhouette(train_layer_outs[subject_layer], is_conv,
-                                  neurons)#train_layer_outs[subject_layer]
+        qtizedlayer=quantizeSilhouette(train_layer_outs[subject_layer], is_conv,
+                              neurons)#train_layer_outs[subject_layer]
 
-            for test_idx in range(len(test_inputs)):
-                if is_conv :
+        for test_idx in range(len(test_inputs)):
+            if is_conv :
+                lout = []
+                for r in neurons:
+                    lout.append(np.mean(test_layer_outs[subject_layer][test_idx][r[1]]))
+
+            else:
                     lout = []
-                    for r in neurons:
-                        lout.append(np.mean(test_layer_outs[subject_layer][test_idx][r[1]]))
-
-                else:
-                        lout = []
-                        # neuronsind=list(zip(*neurons))
-                        neuronsindices=get_non_con_neurons(neurons)
-                        # print(neuronsindices)
-                        for i in neuronsindices:
-                            lout.append(test_layer_outs[subject_layer][test_idx][i])
+                    # neuronsind=list(zip(*neurons))
+                    neuronsindices=get_non_con_neurons(neurons)
+                    
+                    for i in neuronsindices:
+                        lout.append(test_layer_outs[subject_layer][test_idx][i])
 
 
-                comb_to_add = determine_quantized_cover(lout, qtizedlayer)
+            comb_to_add = determine_quantized_cover(lout, qtizedlayer)
+            if comb_to_add not in covered_combinations:
+                    covered_combinations += (comb_to_add,)
 
-                if comb_to_add not in covered_combinations:
-                        covered_combinations += (comb_to_add,)
+        max_comb = 1  # q_granularity**len(relevant_neurons)
 
-            max_comb = 1  # q_granularity**len(relevant_neurons)
+        for q in qtizedlayer:
 
-            for q in qtizedlayer:
+                max_comb *= len(q)
+               
 
-                    max_comb *= len(q)
-                    # print("first_total", total_max_comb)
+                total_max_comb+=max_comb
 
-                    # total_max_comb+=max_comb#works for mnist
-            total_max_comb += max_comb
-
-    print("total_max_comb",total_max_comb)
-
+   
     covered_num = len(covered_combinations)
     coverage = float(covered_num) / total_max_comb
 
@@ -353,7 +334,7 @@ def measure_idc(model, model_name, test_inputs,relevant_neurons, subsetTop,sel_c
 def find_relevant_neurons(kerasmodel, lrpmodel, inps, outs, subject_layer, \
             num_rel, lrpmethod=None, final_relevance_method='sum'):
 
-    #final_relevants = np.zeros([1, kerasmodel.layers[subject_layer].output_shape[-1]])
+   
 
     totalR = None
     cnt = 0
@@ -385,7 +366,6 @@ def find_relevant_neurons(kerasmodel, lrpmodel, inps, outs, subject_layer, \
     #      THE MOST RELEVANT                               THE LEAST RELEVANT
     return np.argsort(totalR[subject_layer])[0][::-1][:num_rel], np.argsort(totalR[subject_layer])[0][:num_rel], totalR
     # return np.argsort(final_relevants)[0][::-1][:num_rel], np.argsort(final_relevants)[0][:num_rel], totalR
-
 
 
 
