@@ -8,7 +8,7 @@ from Coverages.knw import *
 from tensorflow.keras import applications
 from tensorflow.python.client import device_lib
 
-__version__ = 0.1
+__version__ = 0.4
 
 
 
@@ -109,14 +109,13 @@ def generate_coverage(approach,modelpath,dataset,TypeTrknw, percent,selected_cla
 
 
 
-        # for attack in attack_lst:
-        #knw_coverage, covered_TrKnw, TrKnw_neurons, combinations, max_comb, testsize, zero_size, preffered_distance \
+        
         Knw_coverage, covered_TrKnw, combinations, max_comb, testsize, zero_size,Trkneurons= knw.run(split,TypeTrknw,use_adv=False)
 
 
 
         print("The model Transfer Knowledge Neurons number: ", covered_TrKnw)
-        # print("type",TypeTrknw)
+        
         print("The percentage of the used neurons out of all Transfer Knowledge Neurons : ",percent)
 
         print("The test set coverage: %.2f%% for dataset  %s " % (Knw_coverage, dataset))
@@ -144,7 +143,7 @@ if __name__ == "__main__":
         approach = args['approach'] if args['approach'] else 'knw'
         percent = args['percentage'] if args['percentage'] else 0.5
         nbr_Trknw= args['nbr_Trknw'] if args['nbr_Trknw'] else 10
-        threshold = args['HD_thre'] if args['HD_thre'] else 0.55
+        threshold = args['HD_thre'] if args['HD_thre'] else 0.05
         TypeTrknw = args['TrKnw'] if args['TrKnw'] else 'preferred'
         split = args['split'] if args['split'] else 0
         attack = args['adv'] if args['adv'] else 'mim'
