@@ -1,6 +1,6 @@
 
 # DeepKnowledge: Knowledge-Driven automated testing of Deep-Neural Networks
-###### This is the SESAME Assurance of tool-supported technique Data-Driven and Learning Components of EDDIs
+###### This is the SESAME Assurance tool-supported technique of Data-Driven and Learning Components of EDDIs
 
 
 This code is implementation of our tool-supported technique DEEPKNOWLEDGE.
