@@ -3,8 +3,8 @@
 ###### This is the SESAME Assurance tool-supported technique of Data-Driven and Learning Components of EDDIs
 
 
-This code is implementation of our tool-supported technique DEEPKNOWLEDGE.
-It is in beta version and provided as a reference to the approach presented in the deliverable 6.1. 
+This code is an implementation of our tool-supported technique DEEPKNOWLEDGE.
+It is in beta version and provided as a reference to the approach presented in deliverable 6.1. 
 If you encounter any problems, do not hesitate to reach out to the York team (sondess.missaoui@york.ac.uk).
 
 Scripts are tested with the open-source machine learning framework Keras (v2.2.2) with Tensorflow (v2.6) backend.
