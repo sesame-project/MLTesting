@@ -1,6 +1,7 @@
 ## Tools for Automated Quality Assurance of EDDI-Supported MRS
 
 In this repository, we present the installation guide and source code details for the Quality Assurance and Testing toolset for the Data-Driven and Learning Components of the SESAME Platform.
+
 The developed prototype tools are implemented as Python scripts to enable quick adaptation and code maintenance.  ALL prototypes are compatible with most systems and architectures used by our industrial partners.
 
 ### - DeepKnowledgge: 
