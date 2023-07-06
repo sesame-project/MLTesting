@@ -58,7 +58,7 @@ Instead of installing packages individually,  we provide you with the requiremen
  pip install -r GenerativeRepair_requirements.txt
 
 ```
-you need also to install Stable Diffusion model from Hugging Face as follow:
+you need also to install the Stable Diffusion model from Hugging Face as follows:
 ```
 pip install https://github.com/huggingface/diffusers/archive/main.zip -qUU --ignore-installed
 
@@ -129,7 +129,7 @@ Below are some of the repairing results for different DNN models using different
 
 
 <p align="center">
-  <img src="./results/COCO.png" width="600" title="Average Accuracy for VGG19 model before and after repairing with synthetic images" alt="">
+  <img src="MLTesting/results/COCO.png" width="600" title="Average Accuracy for VGG19 model before and after repairing with synthetic images" alt="">
 </p>
 
 
