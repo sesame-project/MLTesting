@@ -22,7 +22,7 @@ Tackling the problem of correcting the DNN model once unsafe behaviour is found.
 ## Installation Requirement Packages
 We recommend starting by creating a virtual environment and then installing the required packages.
 
-### Vitual Environement
+### Virtual Environement
 
 #### Linux
 ```
@@ -123,3 +123,4 @@ CL : Continuous learning of known classes
 
 
 ```
+### Results 
