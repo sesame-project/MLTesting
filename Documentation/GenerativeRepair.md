@@ -43,7 +43,7 @@ source path/to/the/virtual/environment/bin/activate
 conda create -n path/to/the/virtual/environment python=x.x anaconda
 
 ```
-specify your python version by replacing the `python=x.x' in the previous command line.
+specify your Python version by replacing the `python=x.x' in the previous command line.
 
 ###### Activate virtual environment
 ```
@@ -57,6 +57,22 @@ Instead of installing packages individually,  we provide you with the requiremen
  pip install -r GenerativeRepair_requirements.txt
 
 ```
+you need also to install Stable Diffusion model from Hugging Face as follow:
+```
+pip install https://github.com/huggingface/diffusers/archive/main.zip -qUU --ignore-installed
+
+pip install transformers -q -UU ftfy gradio
+```
+you need to create a Hugging Face account and get token to download and install Stable Diffusion Inpainting
+
+
+```
+pip freeze | grep diffusers
+
+wget https://raw.githubusercontent.com/huggingface/diffusers/main/examples/inference/inpainting.py
+
+```
+
 
 
 ## Running GenerativeRepair
