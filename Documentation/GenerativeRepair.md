@@ -127,7 +127,7 @@ CL : Continuous learning of known classes
 ## Results 
 Below are some of the repairing results for different DNN models using different fuzzer and data augmentation techniques:
 
-```
+
 <p align="center">
   <img src="[./DrRepair-overview.png](https://github.com/sesame-project/MLTesting/blob/Knw/results/COCO.png)" width="600" title="Average Accuracy for VGG19 model before and after repairing with synthetic images" alt="">
 </p>
