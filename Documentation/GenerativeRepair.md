@@ -18,7 +18,7 @@ Automatically generate corner cases that can lead to unsafe behaviour, i.e., mis
 
 ### -SafetyRepair: Repairing the DL model:
 Tackling the problem of correcting the DNN model once unsafe behaviour is found. The tool deploys the synthetic corner cases to retrain the DNN model. This helps the DNN model to learn more robust and generalisable representations of the data distribution, leading to better performance on unseen data samples, which could incur failure cases (i.e., misclassification or imprecise detection) in the operational environment.
-![alt text](https://github.com/sesame-project/MLTesting/blob/Knw/results/GenerativeRepair.pdf)
+![alt text](https://github.com/sesame-project/MLTesting/blob/Knw/results/archi.png)
 ```
 ![alt text](http://url/to/img.png)
 ```
