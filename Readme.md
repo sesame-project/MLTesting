@@ -4,7 +4,7 @@ In this repository, we present the installation guide and source code details fo
 
 The developed prototype tools are implemented as Python scripts to enable quick adaptation and code maintenance.  ALL prototypes are compatible with most systems and architectures used by our industrial partners.
 
-### - DeepKnowledgge: 
+### - DeepKnowledge: 
 Testing and Assurance tool of Data-Driven and Learning Components of EDDIs developed in Tasks 6.1.
 Detailed documentation and installation steps about DeepKnowledge are provided in **DeepKnowledge.md** file inside Documentation folder.
 
